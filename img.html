@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AR.js Predefined Image Example</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  </head>
+  <body>
+    <select id="image-select">
+      <option value="path/to/image1.jpg">Image 1</option>
+      <option value="path/to/image2.jpg">Image 2</option>
+      <option value="path/to/image3.jpg">Image 3</option>
+      <!-- add more options here -->
+    </select>
+    <a-scene embedded arjs="sourceType: webcam;">
+      <a-image id="selected-image" src="" position="0 0 0" arjs-hit-testing></a-image>
+      <a-entity camera></a-entity>
+    </a-scene>
+    <script>
+      const imageSelect = document.getElementById('image-select');
+      const selectedImage = document.getElementById('selected-image');
+      imageSelect.addEventListener('change', () => {
+        const imageSrc = imageSelect.value;
+        selectedImage.setAttribute('src', imageSrc);
+      });
+    </script>
+  </body>
+</html>
