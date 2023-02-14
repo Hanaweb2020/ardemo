@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AR.js Predefined Image Example</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  </head>
+  <body>
+    <select id="image-select">
+      <option value="path/to/image1.jpg">Image 1</option>
+      <option value="path/to/image2.jpg">Image 2</option>
+      <option value="path/to/image3.jpg">Image 3</option>
+      <!-- add more options here -->
+    </select>
+    <a-scene embedded arjs="sourceType: webcam;">
+      <a-image id="selected-image" src="" position="0 0 0" scale="1 1 1" rotation="0 0 0" arjs-hit-testing></a-image>
+      <a-entity camera></a-entity>
+    </a-scene>
+    <script>
+      const imageSelect = document.getElementById('image-select');
+      const selectedImage = document.getElementById('selected-image');
+      let isDragging = false;
+      let previousMousePosition = { x: 0, y: 0 };
+      let currentMousePosition = { x: 0, y: 0 };
+      let previousScale = 1;
+      let currentScale = 1;
+      let previousRotation = { x: 0, y: 0, z: 0 };
+      let currentRotation = { x: 0, y: 0, z: 0 };
+      imageSelect.addEventListener('change', () => {
+        const imageSrc = imageSelect.value;
+        selectedImage.setAttribute('src', imageSrc);
+      });
+      selectedImage.addEventListener('mousedown', (event) => {
+        isDragging = true;
+        previousMousePosition = { x: event.clientX, y: event.clientY };
+      });
+      selectedImage.addEventListener('mouseup', () => {
+        isDragging = false;
+        previousMousePosition = { x: 0, y: 0 };
+      });
+      selectedImage.addEventListener('mousemove', (event) => {
+        if (isDragging) {
+          currentMousePosition = { x: event.clientX, y: event.clientY };
+          const delta = {
+            x: currentMousePosition.x - previousMousePosition.x,
+            y: currentMousePosition.y - previousMousePosition.y,
+          };
+          previousMousePosition = currentMousePosition;
+          const rotationFactor = 0.01;
+          currentRotation = {
+            x: previousRotation.x + delta.y * rotationFactor,
+            y: previousRotation.y + delta.x * rotationFactor,
+            z: previousRotation.z,
+          };
+          selectedImage.setAttribute('rotation', currentRotation);
+        }
+      });
+      selectedImage.addEventListener('wheel', (event) => {
+        event.preventDefault();
+        const delta = event.deltaY;
+        previousScale = currentScale;
+        const scaleFactor = 0.1;
+        currentScale = previousScale + delta * scaleFactor;
+        selectedImage.setAttribute('scale', `${currentScale} ${currentScale} ${currentScale}`);
+      });
+    </script>
+  </body>
+</html>
